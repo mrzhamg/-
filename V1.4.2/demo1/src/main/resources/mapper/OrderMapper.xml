@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test001.demo.mapper.OrderMapper" >
+    <insert id="insertOrder" parameterType="com.test001.demo.entity.Order">
+        INSERT INTO orders (uid,sjid,dpname,gid,goods_ms,price,num,aid,sjr_name,sjr_phone,address,imgurl,date) VALUES(#{uid},#{sjid},#{dpname},#{gid},#{goods_ms},#{price},#{num},#{aid},#{sjr_name},#{sjr_phone},#{address},#{imgurl},#{date})
+    </insert>
+
+    <select id="getOrder" resultType="com.test001.demo.entity.Order">
+        SELECT * FROM orders WHERE uid=#{uid}
+    </select>
+
+<!--    <select id="getSjOrder" resultType="com.test001.demo.entity.Order">-->
+<!--        SELECT * FROM orders WHERE sjid=#{sjid}-->
+<!--    </select>-->
+
+    <delete id="deleteOrder" parameterType="com.test001.demo.entity.Order">
+        delete FROM orders WHERE oid=#{oid}
+    </delete>
+
+<!--关联用户表-->
+    <resultMap id="OrderUserResultMap" type="com.test001.demo.entity.Order">
+        <id property="oid" column="oid"></id>
+        <result property="uid" column="ouid"></result>
+        <result property="sjid" column="sjid"></result>
+        <result property="dpname" column="dpname"></result>
+        <result property="gid" column="gid"></result>
+        <result property="goods_ms" column="g_ms"></result>
+        <result property="price" column="jg"></result>
+        <result property="num" column="num"></result>
+        <result property="aid" column="aid"></result>
+        <result property="sjr_name" column="sjr_name"></result>
+        <result property="sjr_phone" column="sjr_phone"></result>
+        <result property="address" column="address"></result>
+        <result property="imgurl" column="imgurl"></result>
+        <result property="date" column="data"></result>
+
+        <association property="user" javaType="com.test001.demo.entity.User">
+            <id property="uid" column="uid"></id>
+            <result property="username" column="username"></result>
+            <result property="name" column="name"></result>
+            <result property="phone" column="phone"></result>
+        </association>
+    </resultMap>
+    <select id="getSjOrder" resultMap="OrderUserResultMap">
+        SELECT orders.oid as oid,orders.uid as ouid,orders.sjid as sjid,orders.dpname as dpname,orders.gid as gid,
+               orders.goods_ms as g_ms,orders.price as jg, orders.num as num, orders.aid as aid,orders.sjr_name as sjr_name,
+               orders.sjr_phone as sjr_phone, orders.address as address, orders.imgurl as imgurl, orders.date as data,
+               user.uid as uid,user.username as username,user.name as name,user.phone as phone
+        FROM `orders` INNER JOIN `user` ON orders.uid=user.uid AND orders.sjid=#{sjid}
+    </select>
+</mapper>

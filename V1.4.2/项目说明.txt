@@ -1,0 +1,5 @@
+1.在D盘创建：
+MiYouStore_data文件夹
+MiYouStore_data文件夹里创建 shoplist（保存商品图片），userImg（保存用户头像）
+
+2.运行miyoustore.sql
