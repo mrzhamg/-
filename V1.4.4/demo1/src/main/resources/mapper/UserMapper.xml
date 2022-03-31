@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test001.demo.mapper.UserMapper" >
+<!--    关联地址表-->
+    <resultMap id="UserAddResultMap" type="com.test001.demo.entity.User">
+        <id property="uid" column="id" ></id>
+        <result property="username" column="username"></result>
+        <result property="name" column="name"></result>
+        <result property="sex" column="sex"></result>
+        <result property="age" column="age"></result>
+        <result property="phone" column="phone"></result>
+        <result property="date" column="dates"></result>
+<!--        关联地址表-->
+        <association property="address" javaType="com.test001.demo.entity.Address">
+            <id property="aid" column="aid"></id>
+            <result property="uid" column="uid"></result>
+            <result property="addres" column="addres"></result>
+            <result property="shoujianName" column="sjName"></result>
+            <result property="sjrPhone" column="sjrPhone"></result>
+        </association>
+    </resultMap>
+
+    <select id="getUserAdd" resultMap="UserAddResultMap">
+        SELECT user.uid as id,user.username as username,user.name as name,user.sex as sex,user.age as age,user.phone as phone,user.date as dates,
+               address.aid as aid,address.uid as uid,address.addres as addres,address.shoujianName as sjName,address.sjrPhone as sjrPhone
+        FROM `user` INNER JOIN `address` ON user.uid=address.uid AND user.uid=#{uid}
+    </select>
+
+
+
+<!-- 根据昵称查询-->
+    <select id="selectName" resultType="com.test001.demo.entity.User">
+        SELECT * FROM user WHERE name=#{name}
+    </select>
+
+<!--    查询昵称和账号-->
+    <select id="selectNameAndUsername" resultType="com.test001.demo.entity.User">
+        SELECT * FROM user WHERE name=#{name} AND username!=#{username}
+    </select>
+
+    <!--    查电话称和账号-->
+    <select id="selectPhoneAndUsername" resultType="com.test001.demo.entity.User">
+        SELECT * FROM user WHERE phone=#{phone} AND username!=#{username}
+    </select>
+
+<!--    增加用户、注册用户-->
+    <select id="selectUsername" resultType="com.test001.demo.entity.User" >
+        SELECT * FROM user WHERE username=#{username}
+    </select>
+    <select id="selectPhone" resultType="com.test001.demo.entity.User" >
+        SELECT * FROM user WHERE phone=#{phone}
+    </select>
+
+<!--    查询全部用户-->
+    <select id="findAll" resultType="com.test001.demo.entity.User" >
+        SELECT * FROM user
+    </select>
+<!--    @Options(useGeneratedKeys = true, keyProperty = "id")  //id可以不填-->
+<!--    @Insert("insert into users (id,xuehao,password,name,sex,age,yuanxi,banji) values(#{id},#{xuehao},#{password},#{name},#{sex},#{age},#{yuanxi},#{banji})")-->
+    <insert id="insertUser" parameterType="com.test001.demo.entity.User">
+        <selectKey keyProperty="uid" resultType="int" order="BEFORE">
+            select last_insert_id()
+        </selectKey>
+        insert into user (uid,username,password,name,sex,age,phone,date,isStore) values(#{uid},#{username},#{password},#{name},#{sex},#{age},#{phone},#{date},#{isStore})
+    </insert>
+
+<!--    修改用户信息-->
+    <update id="updateUsre" parameterType="com.test001.demo.entity.User">
+        UPDATE user SET password=#{password},name=#{name},sex=#{sex},age=#{age},phone=#{phone} WHERE username=#{username};
+    </update>
+
+    <update id="updataIsStore" parameterType="com.test001.demo.entity.User">
+        UPDATE user SET isStore=#{isStore} where phone=#{phone};
+    </update>
+
+<!--    @Delete("delete * FROM users WHERE xuehao=#{xh}")-->
+    <delete id="delete" parameterType="int">
+        delete FROM users WHERE xuehao=#{xh}
+    </delete>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test001.demo.mapper.GoodsMapper">
+<!--    //关联商家表-->
+    <resultMap id="goodsAndshangjia" type="com.test001.demo.entity.Goods">
+        <id property="sid" column="sid"></id>
+        <result property="sjid" column="sjid"></result>
+        <result property="describe" column="ms"></result>
+        <result property="price" column="jg"></result>
+        <result property="img" column="img"></result>
+        <result property="classify" column="fl"></result>
+        <result property="isputaway" column="isp"></result>
+        <result property="miaoshu" column="name"></result>
+
+        <association property="shangjia_user" javaType="com.test001.demo.entity.Shangjia_user">
+            <id property="sjid" column="sjidd"></id>
+            <result property="sj_user" column="sju"></result>
+            <result property="sj_password" column="sjp"></result>
+            <result property="sj_name" column="sjn"></result>
+        </association>
+    </resultMap>
+    <select id="getsidfindsj" resultMap="goodsAndshangjia">
+        SELECT goods.sid as sid,goods.sjid as sjid,goods.describe as ms,goods.price as jg,goods.img as img,goods.classify as fl,goods.isputaway as isp,goods.miaoshu as name,
+                shangjia_user.sjid as sjidd,shangjia_user.sj_user as sju,shangjia_user.sj_name as sjn
+                FROM `goods` inner join `shangjia_user` on goods.sjid=shangjia_user.sjid AND goods.sid=#{sid}
+    </select>
+    <select id="findGoodsAll" resultType="com.test001.demo.entity.Goods" >
+        SELECT * FROM goods where isputaway = true limit 10;
+    </select>
+
+    <select id="findGoodsLimit" resultType="com.test001.demo.entity.Goods" >
+        SELECT * FROM goods where isputaway = true limit #{num};
+    </select>
+
+    <select id="getSidfindGoodsList" resultType="com.test001.demo.entity.Goods" >
+        SELECT * FROM goods where sjid=#{sid};
+    </select>
+
+<!--    搜索查询-->
+    <select id="getSearch" resultType="com.test001.demo.entity.Goods">
+        SELECT * FROM `goods` WHERE `describe` LIKE #{search}
+    </select>
+
+    <insert id="insertGoods" parameterType="com.test001.demo.entity.Goods">
+        insert into goods (sjid,`describe`,price,img,classify,miaoshu,isputaway) VALUES (#{sjid},#{spms},#{price},#{imgurl},#{classify},#{miaoshu},#{isputaway})
+    </insert>
+
+<!--是否上架（is）-->
+    <update id="upGoodsIsputaway" parameterType="com.test001.demo.entity.Goods">
+        UPDATE goods set isputaway=#{isputaway} where sid=#{sid}
+    </update>
+
+<!-- 修改商品信息 -->
+    <update id="UpdataGoodsAll" parameterType="com.test001.demo.entity.Goods">
+        UPDATE goods set `describe`=#{describe},price=#{price},classify=#{classify},`miaoshu`=#{miaoshu} where sid=#{sid};
+    </update>
+
+    <delete id="delGood" parameterType="com.test001.demo.entity.Goods">
+        delete from goods where `sid`=#{sid}
+    </delete>
+</mapper>

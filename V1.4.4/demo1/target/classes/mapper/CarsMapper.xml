@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test001.demo.mapper.CarsMapper" >
+    <select id="getCarsAll" resultType="com.test001.demo.entity.Cars">
+        SELECT * FROM cars WHERE uid=#{uid}
+    </select>
+
+    <insert id="insertCars" parameterType="com.test001.demo.entity.Cars">
+        insert into cars (uid,gid,sjid,price,num,dpname,goods_ms,imgurl) VALUE (#{uid},#{gid},#{sjid},#{price},#{num},#{dpname},#{goods_ms},#{imgurl})
+    </insert>
+
+    <delete id="deleteCars" parameterType="com.test001.demo.entity.Cars">
+        delete FROM cars WHERE cid=#{cid}
+    </delete>
+</mapper>
